@@ -1,0 +1,72 @@
+{
+  "version": 1,
+  "name": "Capped sleeve",
+  "pieces": [
+    {
+      "id": "55d79b34-db75-4bbb-a63e-82f94530a93d",
+      "name": "Outer cylinder",
+      "kind": "cylinder",
+      "size": [
+        10,
+        10,
+        22
+      ],
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "hole": false,
+      "color": "#79a998"
+    },
+    {
+      "id": "a9807e4d-89f3-43cb-a539-2383986eb91c",
+      "name": "Inner cavity · Ø7",
+      "kind": "cylinder",
+      "size": [
+        7,
+        7,
+        18
+      ],
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "hole": true,
+      "color": "#79a998"
+    },
+    {
+      "id": "b1e9ef06-6d92-4344-b6a4-4f8918c58e6c",
+      "name": "Top opening · Ø4",
+      "kind": "cylinder",
+      "size": [
+        4,
+        4,
+        22
+      ],
+      "position": [
+        0,
+        0,
+        0
+      ],
+      "rotation": [
+        0,
+        0,
+        0
+      ],
+      "hole": true,
+      "color": "#79a998"
+    }
+  ]
+}
