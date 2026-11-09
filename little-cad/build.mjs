@@ -7,3 +7,5 @@ let notices='Little CAD uses Three.js (MIT), Manifold (Apache-2.0), and esbuild 
 for(const path of ['node_modules/three/LICENSE','node_modules/manifold-3d/LICENSE','node_modules/esbuild/LICENSE.md']) { try {notices+=await readFile(path,'utf8')+'\n\n';}catch{} }
 await writeFile('dist/THIRD-PARTY-NOTICES.txt',notices+'Manifold source and license: https://github.com/elalish/manifold\n');
 console.log('Built Little CAD. Run python3 serve.py to launch.');
+
+for(const file of ['occt-import-js.js','occt-import-js.wasm','license.occt-import-js.txt','license.occt.txt']) await copyFile('node_modules/occt-import-js/dist/'+file,'dist/'+file);

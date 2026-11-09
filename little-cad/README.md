@@ -1,6 +1,6 @@
 # Little CAD
 
-A small, local CAD workbench for simple printable parts. Add solids, draw and extrude 2D profiles, stack pieces, subtract holes, import STL, and export the finished model.
+A small, local CAD workbench for simple printable parts. Add solids, draw and extrude 2D profiles, stack pieces, subtract holes, import STL or STEP, and export the finished model.
 
 ## Open the app
 
@@ -32,7 +32,7 @@ Click **Draw a 2D profile**. Click polygon corners on the grid, or choose Rectan
 
 ### Import other people's STL files
 
-Use **Import STL** or drag files into the 3D viewport. Both ASCII and binary STL are supported. Imported shapes can be resized, moved, rotated, stacked, or used as cutters. STL has no units: imports are interpreted as millimeters. Imports are centered and placed on the ground.
+Use **Import STL / STEP** or drag files into the 3D viewport. Both ASCII and binary STL are supported. Imported shapes can be resized, moved, rotated, stacked, or used as cutters. STL has no units: imports are interpreted as millimeters. Imports are centered and placed on the ground.
 
 STLs must contain closed, consistently oriented solids. Duplicate vertex positions are welded, but open, inverted, or broken meshes are rejected rather than silently exported. Limit: 25 MB and 250,000 triangles per import. This app does not reconstruct the original editable sketches from an STL.
 
@@ -64,3 +64,13 @@ python3 serve.py
 ```
 
 Tests cover dimensions, cavity and bore subtraction, stacking, concave extrusion, rotation, STL round-trip, project round-trip, and invalid input. The server binds to loopback only and serves `dist/`; it does not upload files or expose the rest of your computer.
+
+## STEP-to-STL conversion
+
+Choose **Import STL / STEP** and open a `.step` or `.stp` file (or drop it into the viewport). Conversion runs locally in a background browser worker using OpenCascade, with output in millimeters and 0.01 mm linear mesh deflection. Once it appears, use **Export STL**. To convert just that file, start a new project before importing; export includes every solid in the workspace.
+
+The converted part is a triangle mesh that can be moved, scaled, stacked, and cut. STEP feature history is not retained. Multiple bodies are imported together as one mesh piece, preserving their relative placement. Files must represent closed solids; surface-only or broken geometry is rejected. Limits: 25 MB input, 250,000 output triangles, and 2 minutes for conversion. Native SolidWorks `.sldprt` is not supported. All converter libraries are bundled; the DGX needs no additional CAD installation.
+
+### Updating an existing DGX copy
+
+Save your current project file first. Stop the server with Ctrl+C, extract the updated ZIP and replace the old app folder (keep your saved project files), then run `python3 serve.py --no-browser` from the new `little-cad` folder. Keep your SSH tunnel as before and refresh the browser. If the import button still says only STL, do a hard refresh.

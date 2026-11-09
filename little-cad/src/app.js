@@ -1,3 +1,4 @@
+import {readSTEP,stepPiece} from './step.js';
 import * as THREE from 'three';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { TransformControls } from 'three/addons/controls/TransformControls.js';
@@ -108,9 +109,16 @@ async function importFiles(files){
   if(!files.length)return;
   try{
     const imported=[];
-    for(const file of files){if(!file.name.toLowerCase().endsWith('.stl'))throw Error('Choose an STL file, or use Open project for .littlecad files.');if(file.size>25*1024*1024)throw Error('Please use an STL smaller than 25 MB.');imported.push(engine.importSTL(await file.arrayBuffer(),file.name.replace(/\.stl$/i,'')));}
-    if(!change(()=>{preview=false;project.pieces.push(...imported);selected=imported.at(-1).id;}))return;fit();toast(`Imported ${imported.length} STL file(s). Dimensions interpreted in millimeters.`);
-  }catch(e){report(e);}
+    for(const file of files){
+      const isStep=/\.(step|stp)$/i.test(file.name);
+      if(!isStep&&!/\.stl$/i.test(file.name))throw Error('Choose an STL, STEP, or STP file.');
+      if(file.size>25*1024*1024)throw Error('Please use a file smaller than 25 MB.');
+      const name=file.name.replace(/\.(stl|step|stp)$/i,'');
+      if(isStep){toast('Converting STEP to a mesh…');$('status').textContent='Converting STEP locally…';const result=await readSTEP(await file.arrayBuffer());imported.push(stepPiece(result,name,engine));}
+      else imported.push(engine.importSTL(await file.arrayBuffer(),name));
+    }
+    if(!change(()=>{preview=false;project.pieces.push(...imported);selected=imported.at(-1).id;}))return;fit();toast(`Imported ${imported.length} model(s) in millimeters. Use Export STL to download the result.`);
+  }catch(e){report(e);$('status').textContent='Import failed — see the message above.';}
 }
 function wire(){
   document.querySelectorAll('[data-shape]').forEach(b=>b.onclick=()=>add(piece(b.dataset.shape,{color:COLORS[project.pieces.length%COLORS.length]})));
